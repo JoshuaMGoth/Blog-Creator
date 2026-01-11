@@ -1092,6 +1092,9 @@
                     <button type="button" id="updatePreviewBtn" class="action-btn">
                         <i class="fas fa-sync"></i> Update Preview
                     </button>
+                    <button type="button" id="saveChangesBtn" class="action-btn" style="display: none; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-color: #3b82f6;">
+                        <i class="fas fa-floppy-disk"></i> Save Changes
+                    </button>
                 </div>
             </div>
             <div id="rawContent" class="preview-content raw-markdown"></div>
@@ -1170,6 +1173,7 @@
         let currentMarkdownContent = '';
         let currentRawContent = '';
         let currentShortSlug = '';
+        let currentBlogId = ''; // Track the blog ID for saving changes
         
         // Variables for main form title generation
         let mainFormTitles = [];
@@ -1415,6 +1419,7 @@
             document.getElementById('spellCheckBtn')?.addEventListener('click', spellCheckContent);
             document.getElementById('saveToBlogBtn')?.addEventListener('click', saveToBlog);
             document.getElementById('updatePreviewBtn')?.addEventListener('click', updatePreviewFromEdit);
+            document.getElementById('saveChangesBtn')?.addEventListener('click', saveChanges);
             
             // Correction buttons
             document.getElementById('pasteBtn')?.addEventListener('click', pasteText);
@@ -2053,7 +2058,59 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    showStatus('Blog saved successfully to: ' + result.path, 'success');
+                    // Store blog ID for future changes
+                    currentBlogId = result.blogId;
+                    
+                    // Show save changes button now that we have a blog ID
+                    const saveChangesBtn = document.getElementById('saveChangesBtn');
+                    if (saveChangesBtn) {
+                        saveChangesBtn.style.display = 'inline-flex';
+                    }
+                    
+                    showStatus('Blog saved successfully to: ' + result.path + '. You can now save changes directly!', 'success');
+                } else {
+                    showStatus('Save failed: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+            }
+        }
+        
+        // Save changes to index.md file
+        async function saveChanges() {
+            if (!currentBlogId) {
+                showStatus('No blog loaded. Please save the blog first.', 'error');
+                return;
+            }
+            
+            if (!currentRawContent) {
+                showStatus('No content to save', 'error');
+                return;
+            }
+            
+            // Show confirmation dialog
+            if (!confirm('Save changes to index.md file? This will overwrite the current file.')) {
+                return;
+            }
+            
+            showStatus('Saving changes...', 'info');
+            
+            try {
+                const response = await fetch('/api/save-changes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        blogId: currentBlogId,
+                        content: currentRawContent
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatus('✅ Changes saved successfully to index.md!', 'success');
                 } else {
                     showStatus('Save failed: ' + result.message, 'error');
                 }

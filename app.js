@@ -1337,6 +1337,68 @@ app.post('/api/upload-server', async (req, res) => {
     }
 });
 
+// Save changes to index.md endpoint (for editing existing blogs)
+app.post('/api/save-changes', async (req, res) => {
+    const { blogId, content } = req.body;
+    const config = getConfig();
+    
+    if (!blogId || !blogId.trim()) {
+        return res.json({ 
+            success: false, 
+            message: 'No blog ID provided' 
+        });
+    }
+    
+    if (!content || !content.trim()) {
+        return res.json({ 
+            success: false, 
+            message: 'No content to save' 
+        });
+    }
+    
+    try {
+        // Check both paths where blog might be stored
+        let blogPath = path.join(__dirname, 'blogs', blogId, 'index.md');
+        let hugoPath = null;
+        
+        // If Hugo path is configured, also update there
+        if (config.hugoPath && config.hugoPath.trim()) {
+            hugoPath = path.join(config.hugoPath, blogId, 'index.md');
+        }
+        
+        // Save to local blogs folder
+        if (fs.existsSync(path.dirname(blogPath))) {
+            fs.writeFileSync(blogPath, content);
+            console.log('Changes saved to local blog:', blogPath);
+        } else {
+            return res.json({ 
+                success: false, 
+                message: `Blog folder not found: ${blogId}` 
+            });
+        }
+        
+        // Also update Hugo directory if it exists
+        if (hugoPath && fs.existsSync(path.dirname(hugoPath))) {
+            fs.writeFileSync(hugoPath, content);
+            console.log('Changes also saved to Hugo directory:', hugoPath);
+        }
+        
+        res.json({
+            success: true,
+            message: 'Changes saved successfully to index.md!',
+            blogId: blogId,
+            path: blogPath
+        });
+        
+    } catch (error) {
+        console.error('Error saving changes:', error.message);
+        res.json({ 
+            success: false, 
+            message: `Error saving changes: ${error.message}` 
+        });
+    }
+});
+
 // Preview blog endpoint
 app.post('/api/preview-blog', (req, res) => {
     const config = getConfig();
