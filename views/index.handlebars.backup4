@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Creator Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a0ca3;
+            --secondary: #7209b7;
+            --accent: #f72585;
+            --bg-dark: #0f172a;
+            --card-dark: #1e293b;
+            --text-light: #f1f5f9;
+            --text-gray: #94a3b8;
+            --border-gray: #334155;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1e1b4b 100%);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-top: 2rem;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text {
+            font-size: 2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .tagline {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main Card */
+        .main-card {
+            background: var(--card-dark);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-gray);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+        }
+
+        .card-title i {
+            color: var(--primary);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label i {
+            color: var(--primary);
+            width: 20px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        textarea.form-input {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Radio Grid */
+        .radio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 0.5rem;
+        }
+
+        .radio-option {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            padding: 1.2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .radio-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .radio-option.selected {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .radio-option input {
+            display: none;
+        }
+
+        .radio-option i {
+            font-size: 1.5rem;
+            color: var(--text-gray);
+            margin-bottom: 0.8rem;
+            transition: var(--transition);
+        }
+
+        .radio-option.selected i {
+            color: var(--primary);
+        }
+
+        .radio-option span {
+            display: block;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* Image Options */
+        .image-options {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .image-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 8px 16px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .image-option:hover {
+            border-color: var(--primary);
+        }
+
+        .image-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--border-gray);
+            border-radius: 8px;
+            padding: 2.5rem;
+            text-align: center;
+            margin-top: 1rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .upload-area i {
+            font-size: 2.5rem;
+            color: var(--text-gray);
+            margin-bottom: 1rem;
+        }
+
+        .upload-area p {
+            color: var(--text-gray);
+        }
+
+        /* Generate Button */
+        .generate-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: var(--transition);
+            margin-top: 1rem;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+        }
+
+        /* Correction Section */
+        .correction-section {
+            background: var(--card-dark);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--border-gray);
+        }
+
+        .correction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .correction-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .correction-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .correction-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 1rem;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            resize: vertical;
+            margin-bottom: 1rem;
+        }
+
+        /* Preview Card */
+        .preview-card {
+            background: var(--card-dark);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid var(--border-gray);
+            display: none;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .preview-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-gray);
+            border-radius: 6px;
+            color: var(--text-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .action-btn:hover {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .preview-content {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 8px;
+            padding: 1.5rem;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: var(--text-light);
+        }
+
+        /* Status Area */
+        .status-area {
+            margin-bottom: 1.5rem;
+        }
+
+        .status-message {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .status-info {
+            background: rgba(67, 97, 238, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .status-success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid #22c55e;
+            color: #22c55e;
+        }
+
+        .status-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-card {
+            background: var(--card-dark);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .action-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .action-card i {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .action-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .action-card p {
+            font-size: 0.875rem;
+            color: var(--text-gray);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem 0;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-gray);
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .main-card, .preview-card, .correction-section {
+                padding: 1.5rem;
+            }
+            
+            .radio-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .image-options {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .preview-header, .correction-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .preview-actions, .correction-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .radio-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo-text {
+                font-size: 1.5rem;
+            }
+            
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="logo-text">Blog Creator Pro</div>
+            </div>
+            <p class="tagline">Generate professional blog posts with AI. Simple, fast, and elegant.</p>
+        </div>
+
+        <!-- Status Area -->
+        <div id="statusArea" class="status-area"></div>
+
+        <!-- Main Form Card -->
+        <div class="main-card">
+            <h2 class="card-title">
+                <i class="fas fa-pen-alt"></i> Create Your Blog Post
+            </h2>
+            
+            <form id="blogForm">
+                <!-- Topic Input -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-heading"></i> Blog Topic / Title
+                    </label>
+                    <input type="text" id="topic" name="topic" required
+                           class="form-input"
+                           placeholder="Enter your blog topic or title...">
+                </div>
+
+                <!-- Blog Type Selection -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-file-alt"></i> Blog Type
+                    </label>
+                    <div class="radio-grid" id="blogTypeGrid">
+                        <!-- Blog types will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Voice Selection -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-microphone-alt"></i> Writing Voice
+                    </label>
+                    <div class="radio-grid" id="voiceGrid">
+                        <!-- Voices will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Additional Instructions -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-comment-dots"></i> Additional Instructions
+                    </label>
+                    <textarea id="additionalInstructions" name="additionalInstructions"
+                              class="form-input"
+                              placeholder="Any specific instructions, tone preferences, or key points..."></textarea>
+                </div>
+
+                <!-- Image Options -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-image"></i> Featured Image
+                    </label>
+                    <div class="image-options">
+                        <label class="image-option">
+                            <input type="radio" name="imageOption" value="generate" checked>
+                            Generate with AI
+                        </label>
+                        <label class="image-option">
+                            <input type="radio" name="imageOption" value="upload">
+                            Upload Image
+                        </label>
+                        <label class="image-option">
+                            <input type="radio" name="imageOption" value="none">
+                            No Image
+                        </label>
+                    </div>
+                    
+                    <!-- Upload Area -->
+                    <div id="uploadArea" style="display: none;">
+                        <div class="upload-area" id="uploadTrigger">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload image or drag and drop</p>
+                        </div>
+                        <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                        <div id="imagePreview" style="margin-top: 1rem;"></div>
+                    </div>
+                </div>
+
+                <!-- Generate Button -->
+                <button type="submit" class="generate-btn">
+                    <i class="fas fa-robot"></i> Generate Blog Post
+                </button>
+            </form>
+        </div>
+
+        <!-- Spell/Grammar Correction Section -->
+        <div class="correction-section">
+            <div class="correction-header">
+                <h3 class="correction-title">
+                    <i class="fas fa-spell-check"></i> Spell & Grammar Correction
+                </h3>
+                <div class="correction-buttons">
+                    <button type="button" id="pasteBtn" class="action-btn">
+                        <i class="fas fa-paste"></i> Paste
+                    </button>
+                    <button type="button" id="correctBtn" class="action-btn">
+                        <i class="fas fa-magic"></i> Correct
+                    </button>
+                </div>
+            </div>
+            <textarea id="correctionText" class="correction-textarea" 
+                      placeholder="Paste your text here for spelling and grammar correction..."></textarea>
+            <div id="correctionResult" class="preview-content" style="display: none; margin-top: 1rem;"></div>
+        </div>
+
+        <!-- Preview Card -->
+        <div id="previewArea" class="preview-card">
+            <div class="preview-header">
+                <h3 class="preview-title">
+                    <i class="fas fa-eye"></i> Generated Blog Preview
+                </h3>
+                <div class="preview-actions">
+                    <button type="button" id="copyBtn" class="action-btn">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <button type="button" id="downloadBtn" class="action-btn">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                </div>
+            </div>
+            <div id="contentPreview" class="preview-content"></div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="action-card" id="testBtn">
+                <i class="fas fa-vial"></i>
+                <h3>Test Connections</h3>
+                <p>Verify API and Hugo setup</p>
+            </div>
+            
+            <div class="action-card" id="previewBtn">
+                <i class="fas fa-eye"></i>
+                <h3>Preview Hugo</h3>
+                <p>Launch local preview server</p>
+            </div>
+            
+            <div class="action-card" id="uploadBtn">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>Upload to Server</h3>
+                <p>Deploy to production</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>
+                <a href="/settings"><i class="fas fa-cog"></i> Settings</a>
+                | Blog Creator Pro v1.0
+                | Powered by DeepSeek API & Hugo
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Define blog types and voices directly in JavaScript
+        const blogTypes = [
+            { value: 'instructional', label: 'Instructional', icon: 'fas fa-graduation-cap' },
+            { value: 'personable', label: 'Personal', icon: 'fas fa-user-circle' },
+            { value: 'story', label: 'Story', icon: 'fas fa-book' },
+            { value: 'informative', label: 'Informative', icon: 'fas fa-chart-bar' },
+            { value: 'persuasive', label: 'Persuasive', icon: 'fas fa-bullhorn' }
+        ];
+        
+        const voices = [
+            { value: 'inspirational', label: 'Inspirational', icon: 'fas fa-star' },
+            { value: 'serious', label: 'Serious', icon: 'fas fa-balance-scale' },
+            { value: 'casual', label: 'Casual', icon: 'fas fa-coffee' },
+            { value: 'humorous', label: 'Humorous', icon: 'fas fa-laugh' },
+            { value: 'empathetic', label: 'Empathetic', icon: 'fas fa-heart' }
+        ];
+        
+        // Variables to track uploaded image
+        let uploadedImageFilename = null;
+        
+        // Initialize with default selections
+        document.addEventListener('DOMContentLoaded', function() {
+            // Populate blog types
+            const blogTypeGrid = document.getElementById('blogTypeGrid');
+            blogTypes.forEach(type => {
+                const label = document.createElement('label');
+                label.className = 'radio-option';
+                label.dataset.value = type.value;
+                label.innerHTML = `
+                    <input type="radio" name="blogType" value="${type.value}">
+                    <i class="${type.icon}"></i>
+                    <span>${type.label}</span>
+                `;
+                blogTypeGrid.appendChild(label);
+            });
+            
+            // Populate voices
+            const voiceGrid = document.getElementById('voiceGrid');
+            voices.forEach(voice => {
+                const label = document.createElement('label');
+                label.className = 'radio-option';
+                label.dataset.value = voice.value;
+                label.innerHTML = `
+                    <input type="radio" name="voice" value="${voice.value}">
+                    <i class="${voice.icon}"></i>
+                    <span>${voice.label}</span>
+                `;
+                voiceGrid.appendChild(label);
+            });
+            
+            // Set default selections
+            setDefaultSelection('instructional', 'casual');
+            
+            // Setup event listeners
+            setupEventListeners();
+        });
+        
+        function setDefaultSelection(blogTypeValue, voiceValue) {
+            // Set default blog type
+            const blogTypeOption = document.querySelector(`[data-value="${blogTypeValue}"]`);
+            if (blogTypeOption) {
+                blogTypeOption.classList.add('selected');
+                blogTypeOption.querySelector('input').checked = true;
+            }
+            
+            // Set default voice
+            const voiceOption = document.querySelector(`[data-value="${voiceValue}"]`);
+            if (voiceOption) {
+                voiceOption.classList.add('selected');
+                voiceOption.querySelector('input').checked = true;
+            }
+        }
+        
+        function setupEventListeners() {
+            // Radio option selection
+            document.querySelectorAll('.radio-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const name = this.querySelector('input').name;
+                    document.querySelectorAll(`[data-value]`).forEach(opt => {
+                        if (opt.querySelector(`input[name="${name}"]`)) {
+                            opt.classList.remove('selected');
+                        }
+                    });
+                    this.classList.add('selected');
+                    this.querySelector('input').checked = true;
+                });
+            });
+            
+            // Image option toggle
+            document.querySelectorAll('input[name="imageOption"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const uploadArea = document.getElementById('uploadArea');
+                    if (this.value === 'upload') {
+                        uploadArea.style.display = 'block';
+                    } else {
+                        uploadArea.style.display = 'none';
+                        uploadedImageFilename = null;
+                    }
+                });
+            });
+            
+            // Upload trigger
+            document.getElementById('uploadTrigger').addEventListener('click', function() {
+                document.getElementById('imageUpload').click();
+            });
+            
+            // Image upload preview
+            document.getElementById('imageUpload').addEventListener('change', async function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Show uploading status
+                    showStatus('Uploading image...', 'info');
+                    
+                    // Create FormData for file upload
+                    const formData = new FormData();
+                    formData.append('image', file);
+                    
+                    try {
+                        const response = await fetch('/api/upload-image', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            uploadedImageFilename = result.filename;
+                            showStatus('Image uploaded successfully!', 'success');
+                            
+                            const preview = document.getElementById('imagePreview');
+                            preview.innerHTML = `
+                                <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border-gray); border-radius: 8px;">
+                                    <img src="${result.path}" alt="Preview" style="width: 80px; height: 80px; object-fit: cover; border-radius: 6px;">
+                                    <div>
+                                        <p style="font-weight: 500; margin-bottom: 5px; color: var(--text-light);">${file.name}</p>
+                                        <p style="font-size: 0.875rem; color: var(--text-gray);">${(file.size / 1024).toFixed(1)} KB</p>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            showStatus('Image upload failed: ' + result.message, 'error');
+                        }
+                    } catch (error) {
+                        showStatus('Image upload error: ' + error.message, 'error');
+                    }
+                }
+            });
+            
+            // Form submission
+            document.getElementById('blogForm').addEventListener('submit', handleFormSubmit);
+            
+            // Action buttons
+            document.getElementById('testBtn').addEventListener('click', testAll);
+            document.getElementById('previewBtn').addEventListener('click', previewHugo);
+            document.getElementById('uploadBtn').addEventListener('click', uploadToServer);
+            document.getElementById('copyBtn').addEventListener('click', copyToClipboard);
+            document.getElementById('downloadBtn').addEventListener('click', downloadBlog);
+            
+            // Correction buttons
+            document.getElementById('pasteBtn').addEventListener('click', pasteText);
+            document.getElementById('correctBtn').addEventListener('click', correctText);
+        }
+        
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const formData = {
+                topic: document.getElementById('topic').value,
+                blogType: document.querySelector('input[name="blogType"]:checked')?.value || 'informative',
+                voice: document.querySelector('input[name="voice"]:checked')?.value || 'casual',
+                additionalInstructions: document.getElementById('additionalInstructions').value,
+                imageFilename: uploadedImageFilename
+            };
+            
+            showStatus('Generating blog post... This may take a moment.', 'info');
+            
+            try {
+                const response = await fetch('/api/generate-blog', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatus('Blog generated successfully!', 'success');
+                    document.getElementById('contentPreview').textContent = result.content || 'No content generated';
+                    document.getElementById('previewArea').style.display = 'block';
+                    document.getElementById('previewArea').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    showStatus('Error: ' + (result.message || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+            }
+        }
+        
+        // Spell/Grammar correction functions
+        async function pasteText() {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('correctionText').value = text;
+                showStatus('Text pasted from clipboard!', 'success');
+            } catch (error) {
+                showStatus('Unable to paste from clipboard. Please paste manually.', 'error');
+            }
+        }
+        
+        async function correctText() {
+            const text = document.getElementById('correctionText').value.trim();
+            
+            if (!text) {
+                showStatus('Please enter some text to correct', 'error');
+                return;
+            }
+            
+            showStatus('Correcting spelling and grammar...', 'info');
+            
+            try {
+                const response = await fetch('/api/correct-text', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text: text })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatus('Text corrected successfully!', 'success');
+                    
+                    const correctionResult = document.getElementById('correctionResult');
+                    correctionResult.textContent = result.corrected;
+                    correctionResult.style.display = 'block';
+                    
+                    // Scroll to result
+                    correctionResult.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    showStatus('Correction failed: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+            }
+        }
+        
+        // Helper functions
+        function showStatus(message, type = 'info') {
+            const statusArea = document.getElementById('statusArea');
+            const statusClass = type === 'error' ? 'status-error' : 
+                              type === 'success' ? 'status-success' : 'status-info';
+            
+            statusArea.innerHTML = `
+                <div class="status-message ${statusClass}">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    ${message}
+                </div>
+            `;
+            
+            setTimeout(() => {
+                statusArea.innerHTML = '';
+            }, 5000);
+        }
+        
+        function testAll() {
+            fetch('/api/test', { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    showStatus(data.message, data.success ? 'success' : 'error');
+                })
+                .catch(error => {
+                    showStatus('Connection error: ' + error.message, 'error');
+                });
+        }
+        
+        function previewHugo() {
+            fetch('/api/preview-blog', { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ blogId: 'latest' })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.url) {
+                    window.open(data.url, '_blank');
+                }
+                showStatus(data.message, data.success ? 'success' : 'error');
+            })
+            .catch(error => {
+                showStatus('Preview error: ' + error.message, 'error');
+            });
+        }
+        
+        function uploadToServer() {
+            if (confirm('This will rebuild and upload your Hugo site. Continue?')) {
+                fetch('/api/upload-server', { method: 'POST' })
+                    .then(res => res.json())
+                    .then(data => {
+                        showStatus(data.message, data.success ? 'success' : 'error');
+                    })
+                    .catch(error => {
+                        showStatus('Upload error: ' + error.message, 'error');
+                    });
+            }
+        }
+        
+        function copyToClipboard() {
+            const content = document.getElementById('contentPreview').textContent;
+            if (!content || content === 'No content generated') {
+                showStatus('No content to copy', 'error');
+                return;
+            }
+            navigator.clipboard.writeText(content)
+                .then(() => showStatus('Copied to clipboard!', 'success'))
+                .catch(() => showStatus('Failed to copy', 'error'));
+        }
+        
+        function downloadBlog() {
+            const content = document.getElementById('contentPreview').textContent;
+            if (!content || content === 'No content generated') {
+                showStatus('No content to download', 'error');
+                return;
+            }
+            const topic = document.getElementById('topic').value || 'blog-post';
+            const blob = new Blob([content], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = generateSlug(topic) + '.md';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showStatus('Blog downloaded!', 'success');
+        }
+        
+        function generateSlug(text) {
+            return text.toLowerCase()
+                .replace(/[^\w\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/--+/g, '-')
+                .trim();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Blog Creator Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a0ca3;
+            --secondary: #7209b7;
+            --accent: #f72585;
+            --bg-dark: #0f172a;
+            --card-dark: #1e293b;
+            --text-light: #f1f5f9;
+            --text-gray: #94a3b8;
+            --border-gray: #334155;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1e1b4b 100%);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-top: 1rem;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+            color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-gray);
+            text-decoration: none;
+            margin-top: 1rem;
+            transition: var(--transition);
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        /* Settings Card */
+        .settings-card {
+            background: var(--card-dark);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-gray);
+        }
+
+        .settings-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+        }
+
+        .settings-title i {
+            color: var(--primary);
+        }
+
+        /* Form Elements */
+        .form-section {
+            margin-bottom: 2.5rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label i {
+            color: var(--primary);
+            width: 20px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .form-text {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-gray);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+            border: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+            padding: 14px;
+            font-size: 1.1rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-gray);
+        }
+
+        /* Status Messages */
+        .status-message {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .status-success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid #22c55e;
+            color: #22c55e;
+        }
+
+        .status-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem 0;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .settings-card {
+                padding: 1.5rem;
+            }
+            
+            .grid-2 {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .button-group .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <div class="logo-text">Settings</div>
+            </div>
+            <a href="/" class="back-link">
+                <i class="fas fa-arrow-left"></i> Back to Blog Creator
+            </a>
+        </div>
+
+        <!-- Status Messages -->
+        {{#if success}}
+        <div class="status-message status-success">
+            <i class="fas fa-check-circle"></i> Settings saved successfully!
+        </div>
+        {{/if}}
+
+        {{#if error}}
+        <div class="status-message status-error">
+            <i class="fas fa-exclamation-circle"></i> Error saving settings
+        </div>
+        {{/if}}
+
+        <!-- Settings Form -->
+        <div class="settings-card">
+            <h1 class="settings-title">
+                <i class="fas fa-sliders-h"></i> Configuration Settings
+            </h1>
+            
+            <form action="/settings" method="POST">
+                <!-- API Configuration -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-key"></i> API Configuration
+                    </h2>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-brain"></i> DeepSeek API Key
+                        </label>
+                        <input type="password" name="deepseekApiKey" value="{{config.deepseekApiKey}}"
+                               class="form-input"
+                               placeholder="Enter your DeepSeek API key">
+                        <p class="form-text">Required for blog content generation</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-image"></i> Image AI API Key (Optional)
+                        </label>
+                        <input type="password" name="imageAiApiKey" value="{{config.imageAiApiKey}}"
+                               class="form-input"
+                               placeholder="Enter your Image AI API key">
+                        <p class="form-text">For AI-generated featured images</p>
+                    </div>
+                </div>
+
+                <!-- Hugo Configuration -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-folder"></i> Hugo Configuration
+                    </h2>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-folder-open"></i> Blog Output Path
+                        </label>
+                        <input type="text" name="hugoPath" value="{{config.hugoPath}}"
+                               class="form-input"
+                               placeholder="/home/user/Hugo/site/content/blog/">
+                        <p class="form-text">Absolute path to where blog posts should be saved (e.g., your Hugo content/blog folder)</p>
+                    </div>
+                </div>
+
+                <!-- Front Matter Defaults -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-code"></i> Front Matter Defaults
+                    </h2>
+                    
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-tags"></i> Default Tags
+                            </label>
+                            <input type="text" name="tags" 
+                                   class="form-input"
+                                   placeholder="blog, tutorial, technology"
+                                   value="{{#if config.frontMatter.tags}}{{config.frontMatter.tags}}{{/if}}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-folder"></i> Default Categories
+                            </label>
+                            <input type="text" name="categories" 
+                                   class="form-input"
+                                   placeholder="technology, programming"
+                                   value="{{#if config.frontMatter.categories}}{{config.frontMatter.categories}}{{/if}}">
+                        </div>
+                    </div>
+                    
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-toggle-on"></i> Draft
+                            </label>
+                            <select name="draft" class="form-input">
+                                <option value="false" {{#unless config.frontMatter.draft}}selected{{/unless}}>false</option>
+                                <option value="true" {{#if config.frontMatter.draft}}selected{{/if}}>true</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-comment"></i> Comments
+                            </label>
+                            <select name="comments" class="form-input">
+                                <option value="true" {{#if config.frontMatter.comments}}selected{{/if}}>true</option>
+                                <option value="false" {{#unless config.frontMatter.comments}}selected{{/unless}}>false</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-eye-slash"></i> Noindex
+                            </label>
+                            <select name="noindex" class="form-input">
+                                <option value="false" {{#unless config.frontMatter.noindex}}selected{{/unless}}>false</option>
+                                <option value="true" {{#if config.frontMatter.noindex}}selected{{/if}}>true</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-star"></i> Featured
+                            </label>
+                            <select name="featured" class="form-input">
+                                <option value="false" {{#unless config.frontMatter.featured}}selected{{/unless}}>false</option>
+                                <option value="true" {{#if config.frontMatter.featured}}selected{{/if}}>true</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-thumbtack"></i> Pinned
+                        </label>
+                        <select name="pinned" class="form-input" style="max-width: 50%;">
+                            <option value="false" {{#unless config.frontMatter.pinned}}selected{{/unless}}>false</option>
+                            <option value="true" {{#if config.frontMatter.pinned}}selected{{/if}}>true</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Deployment Settings -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-server"></i> Deployment Settings (Optional)
+                    </h2>
+                    
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-server"></i> SFTP Host
+                            </label>
+                            <input type="text" name="host" value="{{config.sftp.host}}"
+                                   class="form-input"
+                                   placeholder="example.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-network-wired"></i> Port
+                            </label>
+                            <input type="number" name="port" value="{{config.sftp.port}}"
+                                   class="form-input"
+                                   placeholder="22">
+                        </div>
+                    </div>
+                    
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-user"></i> Username
+                            </label>
+                            <input type="text" name="username" value="{{config.sftp.username}}"
+                                   class="form-input">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-key"></i> Password
+                            </label>
+                            <input type="password" name="password" value="{{config.sftp.password}}"
+                                   class="form-input">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-folder"></i> Remote Path
+                        </label>
+                        <input type="text" name="remotePath" value="{{config.sftp.remotePath}}"
+                               class="form-input"
+                               placeholder="/var/www/html">
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="button-group">
+                    <button type="button" onclick="testSettings()" class="btn btn-outline">
+                        <i class="fas fa-vial"></i> Test Settings
+                    </button>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save All Settings
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Blog Creator Pro v1.0 | Configure once, create endlessly</p>
+        </div>
+    </div>
+
+    <script>
+        function testSettings() {
+            fetch('/api/test', { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message);
+                })
+                .catch(error => {
+                    alert('Error testing settings: ' + error.message);
+                });
+        }
+        
+        // Auto-focus first input
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstInput = document.querySelector('input[type="password"], input[type="text"]');
+            if (firstInput) {
+                firstInput.focus();
+            }
+        });
+    </script>
+</body>
+</html>

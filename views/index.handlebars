@@ -1,0 +1,2223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Creator Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Add Marked.js for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Add Highlight.js for code syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/css.min.js"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a0ca3;
+            --secondary: #7209b7;
+            --accent: #f72585;
+            --bg-dark: #0f172a;
+            --card-dark: #1e293b;
+            --text-light: #f1f5f9;
+            --text-gray: #94a3b8;
+            --border-gray: #334155;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+            --preview-bg: #ffffff;
+            --preview-text: #1e293b;
+            --preview-border: #e2e8f0;
+        }
+
+        .dark-mode {
+            --preview-bg: #1e293b;
+            --preview-text: #f1f5f9;
+            --preview-border: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1e1b4b 100%);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-top: 2rem;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text {
+            font-size: 2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .tagline {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main Card */
+        .main-card {
+            background: var(--card-dark);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-gray);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+        }
+
+        .card-title i {
+            color: var(--primary);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label i {
+            color: var(--primary);
+            width: 20px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        textarea.form-input {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Radio Grid */
+        .radio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 0.5rem;
+        }
+
+        .radio-option {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            padding: 1.2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .radio-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .radio-option.selected {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .radio-option input {
+            display: none;
+        }
+
+        .radio-option i {
+            font-size: 1.5rem;
+            color: var(--text-gray);
+            margin-bottom: 0.8rem;
+            transition: var(--transition);
+        }
+
+        .radio-option.selected i {
+            color: var(--primary);
+        }
+
+        .radio-option span {
+            display: block;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* Image Options */
+        .image-options {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .image-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 8px 16px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .image-option:hover {
+            border-color: var(--primary);
+        }
+
+        .image-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--border-gray);
+            border-radius: 8px;
+            padding: 2.5rem;
+            text-align: center;
+            margin-top: 1rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .upload-area i {
+            font-size: 2.5rem;
+            color: var(--text-gray);
+            margin-bottom: 1rem;
+        }
+
+        .upload-area p {
+            color: var(--text-gray);
+        }
+
+        /* Generate Button */
+        .generate-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: var(--transition);
+            margin-top: 1rem;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+        }
+
+        /* Correction Section */
+        .correction-section {
+            background: var(--card-dark);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--border-gray);
+        }
+
+        .correction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .correction-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .correction-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .correction-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 1rem;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            resize: vertical;
+            margin-bottom: 1rem;
+        }
+
+        /* Blog Creation Section for Corrected Text */
+        #blogCreationSection {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        /* Preview Card */
+        .preview-card {
+            background: var(--card-dark);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid var(--border-gray);
+            display: none;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-gray);
+        }
+
+        .preview-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-gray);
+            border-radius: 6px;
+            color: var(--text-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .action-btn:hover {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        /* Button Group */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .button-group .generate-btn {
+            flex: 1;
+            margin-top: 0;
+        }
+
+        /* SEO Titles Container */
+        #seoTitlesContainer {
+            background: rgba(15, 23, 42, 0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-gray);
+            margin-top: 1rem;
+        }
+
+        /* Preview Tabs */
+        .preview-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-gray);
+            margin-bottom: 1rem;
+        }
+
+        .preview-tab {
+            padding: 10px 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-gray);
+            cursor: pointer;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .preview-tab:hover {
+            color: var(--text-light);
+        }
+
+        .preview-tab.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        /* Preview Content Areas */
+        .preview-content {
+            display: none;
+            background: var(--preview-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            max-height: 500px;
+            overflow-y: auto;
+            color: var(--preview-text);
+            border: 1px solid var(--preview-border);
+        }
+
+        .preview-content.active {
+            display: block;
+        }
+
+        /* Markdown Preview Styling */
+        .markdown-preview {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.7;
+        }
+
+        .markdown-preview h1,
+        .markdown-preview h2,
+        .markdown-preview h3,
+        .markdown-preview h4 {
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            font-weight: 600;
+            line-height: 1.25;
+            color: var(--preview-text);
+        }
+
+        .markdown-preview h1 {
+            font-size: 2.25rem;
+            border-bottom: 2px solid var(--preview-border);
+            padding-bottom: 0.3em;
+        }
+
+        .markdown-preview h2 {
+            font-size: 1.75rem;
+            border-bottom: 1px solid var(--preview-border);
+            padding-bottom: 0.3em;
+        }
+
+        .markdown-preview h3 {
+            font-size: 1.5rem;
+        }
+
+        .markdown-preview h4 {
+            font-size: 1.25rem;
+        }
+
+        .markdown-preview p {
+            margin-top: 0;
+            margin-bottom: 1em;
+        }
+
+        .markdown-preview ul,
+        .markdown-preview ol {
+            margin-top: 0;
+            margin-bottom: 1em;
+            padding-left: 2em;
+        }
+
+        .markdown-preview li {
+            margin-bottom: 0.5em;
+        }
+
+        .markdown-preview blockquote {
+            margin: 1em 0;
+            padding: 0 1em;
+            color: var(--text-gray);
+            border-left: 4px solid var(--primary);
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .markdown-preview code {
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 0.9em;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 3px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+        }
+
+        .markdown-preview pre {
+            margin: 1em 0;
+            padding: 1em;
+            overflow: auto;
+            font-size: 0.9em;
+            line-height: 1.45;
+            background-color: #0f172a;
+            border-radius: 6px;
+            border: 1px solid var(--border-gray);
+        }
+
+        .markdown-preview pre code {
+            padding: 0;
+            margin: 0;
+            background-color: transparent;
+            border: 0;
+            color: #f1f5f9;
+        }
+
+        .markdown-preview a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .markdown-preview a:hover {
+            text-decoration: underline;
+        }
+
+        .markdown-preview img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            margin: 1em 0;
+            border: 1px solid var(--preview-border);
+        }
+
+        .markdown-preview table {
+            width: 100%;
+            margin: 1em 0;
+            border-collapse: collapse;
+            border: 1px solid var(--preview-border);
+        }
+
+        .markdown-preview th,
+        .markdown-preview td {
+            padding: 0.75em;
+            border: 1px solid var(--preview-border);
+            text-align: left;
+        }
+
+        .markdown-preview th {
+            background-color: rgba(0, 0, 0, 0.05);
+            font-weight: 600;
+        }
+
+        .markdown-preview hr {
+            height: 1px;
+            margin: 2em 0;
+            background-color: var(--preview-border);
+            border: 0;
+        }
+
+        /* Raw markdown styling */
+        .raw-markdown {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* Edit textarea styling */
+        .edit-textarea {
+            width: 100%;
+            min-height: 400px;
+            padding: 1rem;
+            background: var(--preview-bg);
+            border: 1px solid var(--preview-border);
+            border-radius: 8px;
+            color: var(--preview-text);
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            resize: vertical;
+        }
+
+        .edit-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .edit-actions {
+            display: flex;
+            justify-content: flex-end;
+            padding: 1rem;
+            gap: 10px;
+        }
+
+        /* Status Area */
+        .status-area {
+            margin-bottom: 1.5rem;
+        }
+
+        .status-message {
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .status-info {
+            background: rgba(67, 97, 238, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .status-success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid #22c55e;
+            color: #22c55e;
+        }
+
+        .status-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-card {
+            background: var(--card-dark);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .action-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .action-card i {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .action-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .action-card p {
+            font-size: 0.875rem;
+            color: var(--text-gray);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem 0;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-gray);
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .main-card, .preview-card, .correction-section {
+                padding: 1.5rem;
+            }
+            
+            .radio-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .image-options {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .preview-header, .correction-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .preview-actions, .correction-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .preview-tabs {
+                justify-content: center;
+            }
+            
+            .markdown-preview h1 {
+                font-size: 1.75rem;
+            }
+            
+            .markdown-preview h2 {
+                font-size: 1.5rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .radio-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .logo-text {
+                font-size: 1.5rem;
+            }
+            
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            
+            .preview-tabs {
+                flex-direction: column;
+            }
+            
+            .preview-tab {
+                text-align: center;
+                border-bottom: none;
+                border-left: 2px solid transparent;
+            }
+            
+            .preview-tab.active {
+                border-bottom: none;
+                border-left: 2px solid var(--primary);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="logo-text">Blog Creator Pro</div>
+            </div>
+            <p class="tagline">Generate professional blog posts with AI. Simple, fast, and elegant.</p>
+        </div>
+
+        <!-- Status Area -->
+        <div id="statusArea" class="status-area"></div>
+
+        <!-- Main Form Card -->
+        <div class="main-card">
+            <h2 class="card-title">
+                <i class="fas fa-pen-alt"></i> Create Your Blog Post
+            </h2>
+            
+            <form id="blogForm">
+                <!-- Title Idea Input -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-lightbulb"></i> Enter a sentence or idea for your blog
+                    </label>
+                    <input type="text" id="titleIdea" name="titleIdea"
+                           class="form-input"
+                           placeholder="Describe what your blog is about in a sentence...">
+                    <button type="button" id="generateTitlesBtn" class="action-btn" style="margin-top: 10px;">
+                        <i class="fas fa-magic"></i> Generate 5 Title Options
+                    </button>
+                </div>
+
+                <!-- Title Selection (hidden until titles are generated) -->
+                <div class="form-group" id="titleSelectionGroup" style="display: none;">
+                    <label class="form-label">
+                        <i class="fas fa-heading"></i> Select Your Blog Title
+                    </label>
+                    <div id="titleOptionsGrid" class="radio-grid"></div>
+                    <input type="hidden" id="topic" name="topic">
+                    <input type="hidden" id="blogDescription" name="blogDescription">
+                    <input type="hidden" id="blogAltText" name="blogAltText">
+                </div>
+
+                <!-- Description/Alt Text Selection (hidden until titles are generated) -->
+                <div class="form-group" id="descAltSelectionGroup" style="display: none;">
+                    <label class="form-label">
+                        <i class="fas fa-comment-alt"></i> Select Description & Alt Text (from generated titles)
+                    </label>
+                    <div id="descAltOptionsGrid" class="radio-grid"></div>
+                </div>
+
+                <!-- Blog Type Selection -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-file-alt"></i> Blog Type
+                    </label>
+                    <div class="radio-grid" id="blogTypeGrid">
+                        <!-- Blog types will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Voice Selection -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-microphone-alt"></i> Writing Voice
+                    </label>
+                    <div class="radio-grid" id="voiceGrid">
+                        <!-- Voices will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Categories Input -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-folder"></i> Categories (comma separated)
+                    </label>
+                    <input type="text" id="categories" name="categories"
+                           class="form-input"
+                           placeholder="e.g. Technology, Programming, AI">
+                </div>
+
+                <!-- Tags Input -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-tags"></i> Tags (comma separated)
+                    </label>
+                    <input type="text" id="tags" name="tags"
+                           class="form-input"
+                           placeholder="e.g. javascript, web development, tutorial">
+                </div>
+
+                <!-- Series Input -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-layer-group"></i> Series
+                    </label>
+                    <input type="text" id="series" name="series"
+                           class="form-input"
+                           placeholder="e.g. Python Tutorial Series">
+                </div>
+
+                <!-- Additional Instructions -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-comment-dots"></i> Additional Instructions
+                    </label>
+                    <textarea id="additionalInstructions" name="additionalInstructions"
+                              class="form-input"
+                              placeholder="Any specific instructions, tone preferences, or key points..."></textarea>
+                </div>
+
+                <!-- Image Options -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-image"></i> Featured Image
+                    </label>
+                    <div class="image-options">
+                        <label class="image-option">
+                            <input type="radio" name="imageOption" value="generate" checked>
+                            Generate with AI
+                        </label>
+                        <label class="image-option">
+                            <input type="radio" name="imageOption" value="upload">
+                            Upload Image
+                        </label>
+                        <label class="image-option">
+                            <input type="radio" name="imageOption" value="none">
+                            No Image
+                        </label>
+                    </div>
+                    
+                    <!-- Upload Area -->
+                    <div id="uploadArea" style="display: none;">
+                        <div class="upload-area" id="uploadTrigger">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload image or drag and drop</p>
+                        </div>
+                        <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                        <div id="imagePreview" style="margin-top: 1rem;"></div>
+                    </div>
+                </div>
+
+                <!-- Generate Button -->
+                <button type="submit" class="generate-btn">
+                    <i class="fas fa-robot"></i> Generate Blog Post
+                </button>
+            </form>
+        </div>
+
+        <!-- Spell/Grammar Correction Section -->
+        <div class="correction-section">
+            <div class="correction-header">
+                <h3 class="correction-title">
+                    <i class="fas fa-spell-check"></i> Spell & Grammar Correction
+                </h3>
+                <div class="correction-buttons">
+                    <button type="button" id="pasteBtn" class="action-btn">
+                        <i class="fas fa-paste"></i> Paste
+                    </button>
+                    <button type="button" id="correctBtn" class="action-btn">
+                        <i class="fas fa-magic"></i> Correct
+                    </button>
+                </div>
+            </div>
+            <textarea id="correctionText" class="correction-textarea" 
+                      placeholder="Paste your text here for spelling and grammar correction..."></textarea>
+            <div id="correctionResult" class="preview-content" style="display: none; margin-top: 1rem;"></div>
+        </div>
+
+        <!-- Blog Creation Section for Corrected Text -->
+        <div id="blogCreationSection" class="main-card">
+            <h2 class="card-title">
+                <i class="fas fa-edit"></i> Create Blog from Corrected Text
+            </h2>
+            
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-heading"></i> Title Selection
+                </label>
+                <div class="form-group">
+                    <input type="text" id="customTitle" class="form-input" 
+                           placeholder="Enter a custom title or click 'Generate SEO Titles'">
+                </div>
+                <div class="form-group">
+                    <button type="button" id="generateSeoTitlesBtn" class="action-btn" style="margin-right: 10px;">
+                        <i class="fas fa-bolt"></i> Generate SEO Titles
+                    </button>
+                </div>
+                
+                <div id="seoTitlesContainer" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-star"></i> Select Title
+                        </label>
+                        <div id="titleOptions" class="radio-grid"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-comment-alt"></i> Select Description
+                        </label>
+                        <div id="descriptionOptions" class="radio-grid"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Blog Type and Voice Selection -->
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-file-alt"></i> Blog Type
+                </label>
+                <div class="radio-grid" id="correctedBlogTypeGrid"></div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-microphone-alt"></i> Writing Voice
+                </label>
+                <div class="radio-grid" id="correctedVoiceGrid"></div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="button-group">
+                <button type="button" id="formatBlogBtn" class="generate-btn">
+                    <i class="fas fa-magic"></i> Format as Blog
+                </button>
+                <button type="button" id="postBlogBtn" class="generate-btn" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    <i class="fas fa-paper-plane"></i> Post Blog
+                </button>
+            </div>
+        </div>
+
+        <!-- Preview Card -->
+        <div id="previewArea" class="preview-card">
+            <div class="preview-header">
+                <h3 class="preview-title">
+                    <i class="fas fa-eye"></i> Blog Preview
+                </h3>
+                <div class="preview-actions">
+                    <button type="button" id="copyBtn" class="action-btn">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <button type="button" id="downloadBtn" class="action-btn">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                    <button type="button" id="spellCheckBtn" class="action-btn">
+                        <i class="fas fa-spell-check"></i> Spell Check
+                    </button>
+                    <button type="button" id="saveToBlogBtn" class="action-btn" style="background: linear-gradient(135deg, #10b981, #059669); border-color: #10b981;">
+                        <i class="fas fa-save"></i> Save to Blog
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Preview Tabs -->
+            <div class="preview-tabs">
+                <button class="preview-tab active" data-tab="preview">Preview</button>
+                <button class="preview-tab" data-tab="edit">Edit</button>
+                <button class="preview-tab" data-tab="raw">Raw Markdown</button>
+                <button class="preview-tab" data-tab="frontmatter">Front Matter</button>
+            </div>
+            
+            <!-- Preview Content -->
+            <div id="previewContent" class="preview-content markdown-preview active"></div>
+            <div id="editContent" class="preview-content" style="padding: 0;">
+                <textarea id="editTextarea" class="edit-textarea" placeholder="Edit your blog content here..."></textarea>
+                <div class="edit-actions">
+                    <button type="button" id="updatePreviewBtn" class="action-btn">
+                        <i class="fas fa-sync"></i> Update Preview
+                    </button>
+                </div>
+            </div>
+            <div id="rawContent" class="preview-content raw-markdown"></div>
+            <div id="frontmatterContent" class="preview-content raw-markdown"></div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <!-- MODIFIED v1.1.0: Changed from Test Connections to Start Server -->
+            <div class="action-card" id="startServerBtn">
+                <i class="fas fa-server"></i>
+                <h3>Start Server</h3>
+                <p>Launch Hugo server with auto-refresh</p>
+            </div>
+            
+            <div class="action-card" id="previewBtn">
+                <i class="fas fa-eye"></i>
+                <h3>Preview Hugo</h3>
+                <p>Launch local preview server</p>
+            </div>
+            
+            <div class="action-card" id="uploadBtn">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h3>Upload to Server</h3>
+                <p>Deploy to production</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>
+                <a href="/settings"><i class="fas fa-cog"></i> Settings</a>
+                | Blog Creator Pro v1.0
+                | Powered by DeepSeek API & Hugo
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configure marked for markdown rendering
+        marked.setOptions({
+            breaks: true,
+            gfm: true,
+            headerIds: true,
+            highlight: function(code, lang) {
+                if (lang && hljs.getLanguage(lang)) {
+                    try {
+                        return hljs.highlight(code, { language: lang }).value;
+                    } catch (err) {
+                        console.error('Highlight error:', err);
+                    }
+                }
+                return code;
+            }
+        });
+
+        // Define blog types and voices directly in JavaScript
+        const blogTypes = [
+            { value: 'instructional', label: 'Instructional', icon: 'fas fa-graduation-cap' },
+            { value: 'personable', label: 'Personal', icon: 'fas fa-user-circle' },
+            { value: 'story', label: 'Story', icon: 'fas fa-book' },
+            { value: 'informative', label: 'Informative', icon: 'fas fa-chart-bar' },
+            { value: 'persuasive', label: 'Persuasive', icon: 'fas fa-bullhorn' }
+        ];
+        
+        const voices = [
+            { value: 'inspirational', label: 'Inspirational', icon: 'fas fa-star' },
+            { value: 'serious', label: 'Serious', icon: 'fas fa-balance-scale' },
+            { value: 'casual', label: 'Casual', icon: 'fas fa-coffee' },
+            { value: 'humorous', label: 'Humorous', icon: 'fas fa-laugh' },
+            { value: 'empathetic', label: 'Empathetic', icon: 'fas fa-heart' }
+        ];
+        
+        // Variables to track uploaded image
+        let uploadedImageFilename = null;
+        let currentMarkdownContent = '';
+        let currentRawContent = '';
+        let currentShortSlug = '';
+        
+        // Variables for main form title generation
+        let mainFormTitles = [];
+        let mainFormSelectedTitle = '';
+        let mainFormDescription = '';
+        let mainFormAltText = '';
+        
+        // Variables for corrected text blog creation
+        let correctedTextContent = '';
+        let seoTitles = [];
+        let selectedTitle = '';
+        let selectedDescription = '';
+        let correctedBlogType = 'informative';
+        let correctedVoice = 'casual';
+        
+        // Initialize with default selections
+        document.addEventListener('DOMContentLoaded', function() {
+            // Populate blog types
+            const blogTypeGrid = document.getElementById('blogTypeGrid');
+            blogTypes.forEach(type => {
+                const label = document.createElement('label');
+                label.className = 'radio-option';
+                label.dataset.value = type.value;
+                label.innerHTML = `
+                    <input type="radio" name="blogType" value="${type.value}">
+                    <i class="${type.icon}"></i>
+                    <span>${type.label}</span>
+                `;
+                blogTypeGrid.appendChild(label);
+            });
+            
+            // Populate voices
+            const voiceGrid = document.getElementById('voiceGrid');
+            voices.forEach(voice => {
+                const label = document.createElement('label');
+                label.className = 'radio-option';
+                label.dataset.value = voice.value;
+                label.innerHTML = `
+                    <input type="radio" name="voice" value="${voice.value}">
+                    <i class="${voice.icon}"></i>
+                    <span>${voice.label}</span>
+                `;
+                voiceGrid.appendChild(label);
+            });
+            
+            // Set default selections for main form
+            setDefaultSelection('instructional', 'casual');
+            
+            // Initialize corrected blog creation
+            initCorrectedBlogCreation();
+            
+            // Setup event listeners
+            setupEventListeners();
+        });
+        
+        function setDefaultSelection(blogTypeValue, voiceValue) {
+            // Set default blog type
+            const blogTypeOption = document.querySelector(`[data-value="${blogTypeValue}"]`);
+            if (blogTypeOption) {
+                blogTypeOption.classList.add('selected');
+                blogTypeOption.querySelector('input').checked = true;
+            }
+            
+            // Set default voice
+            const voiceOption = document.querySelector(`[data-value="${voiceValue}"]`);
+            if (voiceOption) {
+                voiceOption.classList.add('selected');
+                voiceOption.querySelector('input').checked = true;
+            }
+        }
+        
+        // Initialize corrected text blog creation
+        function initCorrectedBlogCreation() {
+            // Populate blog types for corrected text
+            const correctedBlogTypeGrid = document.getElementById('correctedBlogTypeGrid');
+            correctedBlogTypeGrid.innerHTML = '';
+            blogTypes.forEach(type => {
+                const label = document.createElement('label');
+                label.className = 'radio-option';
+                label.dataset.value = type.value;
+                label.innerHTML = `
+                    <input type="radio" name="correctedBlogType" value="${type.value}">
+                    <i class="${type.icon}"></i>
+                    <span>${type.label}</span>
+                `;
+                correctedBlogTypeGrid.appendChild(label);
+            });
+            
+            // Populate voices for corrected text
+            const correctedVoiceGrid = document.getElementById('correctedVoiceGrid');
+            correctedVoiceGrid.innerHTML = '';
+            voices.forEach(voice => {
+                const label = document.createElement('label');
+                label.className = 'radio-option';
+                label.dataset.value = voice.value;
+                label.innerHTML = `
+                    <input type="radio" name="correctedVoice" value="${voice.value}">
+                    <i class="${voice.icon}"></i>
+                    <span>${voice.label}</span>
+                `;
+                correctedVoiceGrid.appendChild(label);
+            });
+            
+            // Set default selections for corrected blog
+            setDefaultSelectionForCorrected('informative', 'casual');
+            
+            // Setup event listeners for corrected section
+            setupCorrectedEventListeners();
+        }
+        
+        function setDefaultSelectionForCorrected(blogTypeValue, voiceValue) {
+            // Set default blog type
+            const blogTypeOption = document.querySelector(`#correctedBlogTypeGrid [data-value="${blogTypeValue}"]`);
+            if (blogTypeOption) {
+                blogTypeOption.classList.add('selected');
+                blogTypeOption.querySelector('input').checked = true;
+                correctedBlogType = blogTypeValue;
+            }
+            
+            // Set default voice
+            const voiceOption = document.querySelector(`#correctedVoiceGrid [data-value="${voiceValue}"]`);
+            if (voiceOption) {
+                voiceOption.classList.add('selected');
+                voiceOption.querySelector('input').checked = true;
+                correctedVoice = voiceValue;
+            }
+        }
+        
+        function setupEventListeners() {
+            // Radio option selection
+            document.querySelectorAll('.radio-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const name = this.querySelector('input').name;
+                    document.querySelectorAll(`[data-value]`).forEach(opt => {
+                        if (opt.querySelector(`input[name="${name}"]`)) {
+                            opt.classList.remove('selected');
+                        }
+                    });
+                    this.classList.add('selected');
+                    this.querySelector('input').checked = true;
+                });
+            });
+            
+            // Image option toggle
+            document.querySelectorAll('input[name="imageOption"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const uploadArea = document.getElementById('uploadArea');
+                    if (this.value === 'upload') {
+                        uploadArea.style.display = 'block';
+                    } else {
+                        uploadArea.style.display = 'none';
+                        uploadedImageFilename = null;
+                    }
+                });
+            });
+            
+            // Upload trigger
+            document.getElementById('uploadTrigger').addEventListener('click', function() {
+                document.getElementById('imageUpload').click();
+            });
+            
+            // Image upload preview
+            document.getElementById('imageUpload').addEventListener('change', async function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Show uploading status
+                    showStatus('Uploading image...', 'info');
+                    
+                    // Create FormData for file upload
+                    const formData = new FormData();
+                    formData.append('image', file);
+                    
+                    try {
+                        const response = await fetch('/api/upload-image', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            uploadedImageFilename = result.filename;
+                            showStatus('Image uploaded successfully!', 'success');
+                            
+                            const preview = document.getElementById('imagePreview');
+                            preview.innerHTML = `
+                                <div style="display: flex; align-items: center; gap: 15px; padding: 15px; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border-gray); border-radius: 8px;">
+                                    <img src="${result.path}" alt="Preview" style="width: 80px; height: 80px; object-fit: cover; border-radius: 6px;">
+                                    <div>
+                                        <p style="font-weight: 500; margin-bottom: 5px; color: var(--text-light);">${file.name}</p>
+                                        <p style="font-size: 0.875rem; color: var(--text-gray);">${(file.size / 1024).toFixed(1)} KB</p>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            showStatus('Image upload failed: ' + result.message, 'error');
+                        }
+                    } catch (error) {
+                        showStatus('Image upload error: ' + error.message, 'error');
+                    }
+                }
+            });
+            
+            // Form submission
+            document.getElementById('blogForm').addEventListener('submit', handleFormSubmit);
+            
+            // Preview tab switching
+            document.querySelectorAll('.preview-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.dataset.tab;
+                    
+                    // Update active tab
+                    document.querySelectorAll('.preview-tab').forEach(t => {
+                        t.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Show corresponding content
+                    document.querySelectorAll('.preview-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    if (tabId === 'preview') {
+                        document.getElementById('previewContent').classList.add('active');
+                    } else if (tabId === 'edit') {
+                        document.getElementById('editContent').classList.add('active');
+                        // Sync edit textarea with current content
+                        document.getElementById('editTextarea').value = currentRawContent;
+                    } else if (tabId === 'raw') {
+                        document.getElementById('rawContent').classList.add('active');
+                    } else if (tabId === 'frontmatter') {
+                        document.getElementById('frontmatterContent').classList.add('active');
+                    }
+                });
+            });
+            
+            // Action buttons
+            document.getElementById('startServerBtn')?.addEventListener('click', startHugoServer);
+            document.getElementById('previewBtn')?.addEventListener('click', previewHugo);
+            document.getElementById('uploadBtn')?.addEventListener('click', uploadToServer);
+            document.getElementById('copyBtn')?.addEventListener('click', copyToClipboard);
+            document.getElementById('downloadBtn')?.addEventListener('click', downloadBlog);
+            document.getElementById('spellCheckBtn')?.addEventListener('click', spellCheckContent);
+            document.getElementById('saveToBlogBtn')?.addEventListener('click', saveToBlog);
+            document.getElementById('updatePreviewBtn')?.addEventListener('click', updatePreviewFromEdit);
+            
+            // Correction buttons
+            document.getElementById('pasteBtn')?.addEventListener('click', pasteText);
+            document.getElementById('correctBtn')?.addEventListener('click', correctText);
+            
+            // Main form title generation button
+            document.getElementById('generateTitlesBtn')?.addEventListener('click', generateMainFormTitles);
+        }
+        
+        // Generate titles for main blog form
+        async function generateMainFormTitles() {
+            const titleIdea = document.getElementById('titleIdea').value.trim();
+            
+            if (!titleIdea) {
+                showStatus('Please enter a sentence or idea for your blog', 'error');
+                return;
+            }
+            
+            showStatus('Generating title options...', 'info');
+            
+            try {
+                const response = await fetch('/api/generate-seo-titles', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ topic: titleIdea })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    mainFormTitles = result.titles;
+                    showStatus('Title options generated! Select your preferred title.', 'success');
+                    displayMainFormTitles();
+                } else {
+                    showStatus('Title generation failed: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+            }
+        }
+        
+        // Display title options for main form
+        function displayMainFormTitles() {
+            const titleSelectionGroup = document.getElementById('titleSelectionGroup');
+            const titleOptionsGrid = document.getElementById('titleOptionsGrid');
+            const descAltSelectionGroup = document.getElementById('descAltSelectionGroup');
+            const descAltOptionsGrid = document.getElementById('descAltOptionsGrid');
+            
+            // Clear existing options
+            titleOptionsGrid.innerHTML = '';
+            descAltOptionsGrid.innerHTML = '';
+            
+            // Create title radio options
+            mainFormTitles.forEach((title, index) => {
+                const label = document.createElement('label');
+                label.className = 'radio-option';
+                label.dataset.index = index;
+                label.innerHTML = `
+                    <input type="radio" name="mainFormTitle" value="${title}" data-index="${index}">
+                    <i class="fas fa-heading"></i>
+                    <span style="font-size: 0.85rem;">${title}</span>
+                `;
+                titleOptionsGrid.appendChild(label);
+                
+                // Add click event listener
+                label.addEventListener('click', function() {
+                    // Remove selected class from all options
+                    document.querySelectorAll('#titleOptionsGrid .radio-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    this.querySelector('input').checked = true;
+                    
+                    // Set the selected title
+                    mainFormSelectedTitle = title;
+                    document.getElementById('topic').value = title;
+                });
+            });
+            
+            // Create description/alt text radio options (copy of titles for second selection)
+            mainFormTitles.forEach((title, index) => {
+                const label = document.createElement('label');
+                label.className = 'radio-option';
+                label.dataset.index = index;
+                label.innerHTML = `
+                    <input type="radio" name="mainFormDescAlt" value="${title}" data-index="${index}">
+                    <i class="fas fa-comment-alt"></i>
+                    <span style="font-size: 0.85rem;">${title}</span>
+                `;
+                descAltOptionsGrid.appendChild(label);
+                
+                // Add click event listener for description/alt text selection
+                label.addEventListener('click', function() {
+                    // Remove selected class from all options
+                    document.querySelectorAll('#descAltOptionsGrid .radio-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    this.querySelector('input').checked = true;
+                    
+                    // Set the selected description and alt text
+                    mainFormDescription = title;
+                    mainFormAltText = title;
+                    document.getElementById('blogDescription').value = title;
+                    document.getElementById('blogAltText').value = title;
+                });
+            });
+            
+            // Show the title selection group and description/alt text group
+            titleSelectionGroup.style.display = 'block';
+            descAltSelectionGroup.style.display = 'block';
+            titleSelectionGroup.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function setupCorrectedEventListeners() {
+            // Radio option selection for corrected blog
+            document.querySelectorAll('#correctedBlogTypeGrid .radio-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('#correctedBlogTypeGrid .radio-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    this.querySelector('input').checked = true;
+                    correctedBlogType = this.querySelector('input').value;
+                });
+            });
+            
+            document.querySelectorAll('#correctedVoiceGrid .radio-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('#correctedVoiceGrid .radio-option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    this.querySelector('input').checked = true;
+                    correctedVoice = this.querySelector('input').value;
+                });
+            });
+            
+            // Title selection
+            document.getElementById('generateSeoTitlesBtn').addEventListener('click', generateSEOTitles);
+            
+            // Format blog button
+            document.getElementById('formatBlogBtn').addEventListener('click', formatCorrectedAsBlog);
+            
+            // Post blog button
+            document.getElementById('postBlogBtn').addEventListener('click', postCorrectedBlog);
+        }
+        
+        // Extract front matter from markdown
+        function extractFrontMatter(markdown) {
+            const lines = markdown.split('\n');
+            const frontMatter = {};
+            
+            if (lines[0] === '---') {
+                let i = 1;
+                while (i < lines.length && lines[i] !== '---') {
+                    const line = lines[i];
+                    const colonIndex = line.indexOf(':');
+                    if (colonIndex > -1) {
+                        const key = line.substring(0, colonIndex).trim();
+                        const value = line.substring(colonIndex + 1).trim();
+                        frontMatter[key] = value;
+                    }
+                    i++;
+                }
+            }
+            
+            return frontMatter;
+        }
+        
+        // Extract content without front matter
+        function extractContent(markdown) {
+            const lines = markdown.split('\n');
+            
+            if (lines[0] === '---') {
+                let i = 1;
+                while (i < lines.length && lines[i] !== '---') {
+                    i++;
+                }
+                return lines.slice(i + 1).join('\n');
+            }
+            
+            return markdown;
+        }
+        
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            // Validate that a title is selected
+            const topic = document.getElementById('topic').value || mainFormSelectedTitle;
+            if (!topic) {
+                showStatus('Please generate and select a title first', 'error');
+                return;
+            }
+            
+            // Parse categories and tags from comma-separated input
+            const categoriesInput = document.getElementById('categories').value;
+            const tagsInput = document.getElementById('tags').value;
+            const seriesInput = document.getElementById('series').value;
+            const categories = categoriesInput ? categoriesInput.split(',').map(c => c.trim()).filter(c => c) : [];
+            const tags = tagsInput ? tagsInput.split(',').map(t => t.trim()).filter(t => t) : [];
+            const series = seriesInput ? [seriesInput.trim()] : [];
+            
+            const formData = {
+                topic: topic,
+                description: mainFormDescription || document.getElementById('blogDescription').value || '',
+                altText: mainFormAltText || document.getElementById('blogAltText').value || topic,
+                blogType: document.querySelector('input[name="blogType"]:checked')?.value || 'informative',
+                voice: document.querySelector('input[name="voice"]:checked')?.value || 'casual',
+                additionalInstructions: document.getElementById('additionalInstructions').value,
+                imageFilename: uploadedImageFilename,
+                categories: categories,
+                tags: tags,
+                series: series
+            };
+            
+            showStatus('Generating blog post... This may take a moment.', 'info');
+            
+            try {
+                const response = await fetch('/api/generate-blog', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatus('Blog generated! Review and click "Save to Blog" to save.', 'success');
+                    
+                    // Store the full content and metadata
+                    currentRawContent = result.content;
+                    currentMarkdownContent = extractContent(result.content);
+                    currentShortSlug = result.shortSlug;
+                    uploadedImageFilename = result.imageFilename;
+                    
+                    // Update preview tabs
+                    document.getElementById('previewContent').innerHTML = marked.parse(currentMarkdownContent);
+                    document.getElementById('rawContent').textContent = currentRawContent;
+                    document.getElementById('editTextarea').value = currentRawContent;
+                    
+                    // Extract and display front matter
+                    const frontMatter = extractFrontMatter(result.content);
+                    let frontMatterText = '';
+                    for (const [key, value] of Object.entries(frontMatter)) {
+                        frontMatterText += `${key}: ${value}\n`;
+                    }
+                    document.getElementById('frontmatterContent').textContent = frontMatterText || 'No front matter found';
+                    
+                    // Apply syntax highlighting
+                    document.querySelectorAll('pre code').forEach((block) => {
+                        hljs.highlightElement(block);
+                    });
+                    
+                    // Show preview area
+                    document.getElementById('previewArea').style.display = 'block';
+                    document.getElementById('previewArea').scrollIntoView({ behavior: 'smooth' });
+                    
+                    // Ensure preview tab is active by default
+                    document.querySelectorAll('.preview-tab').forEach(tab => tab.classList.remove('active'));
+                    document.querySelectorAll('.preview-content').forEach(content => content.classList.remove('active'));
+                    document.querySelector('.preview-tab[data-tab="preview"]').classList.add('active');
+                    document.getElementById('previewContent').classList.add('active');
+                } else {
+                    showStatus('Error: ' + (result.message || 'Unknown error'), 'error');
+                }
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+            }
+        }
+        
+        // Spell/Grammar correction functions
+        async function pasteText() {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('correctionText').value = text;
+                showStatus('Text pasted from clipboard!', 'success');
+            } catch (error) {
+                showStatus('Unable to paste from clipboard. Please paste manually.', 'error');
+            }
+        }
+        
+        async function correctText() {
+            const text = document.getElementById('correctionText').value.trim();
+            
+            if (!text) {
+                showStatus('Please enter some text to correct', 'error');
+                return;
+            }
+            
+            showStatus('Correcting spelling and grammar...', 'info');
+            
+            try {
+                const response = await fetch('/api/correct-text', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text: text })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatus('Text corrected successfully!', 'success');
+                    
+                    const correctionResult = document.getElementById('correctionResult');
+                    correctionResult.innerHTML = marked.parse(result.corrected);
+                    correctionResult.style.display = 'block';
+                    
+                    // Store corrected text
+                    correctedTextContent = result.corrected;
+                    
+                    // Show blog creation section
+                    document.getElementById('blogCreationSection').style.display = 'block';
+                    document.getElementById('blogCreationSection').scrollIntoView({ behavior: 'smooth' });
+                    
+                    // Scroll to result
+                    correctionResult.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    showStatus('Correction failed: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+            }
+        }
+        
+        // Generate SEO titles based on custom title
+        async function generateSEOTitles() {
+            const customTitle = document.getElementById('customTitle').value.trim();
+            
+            if (!customTitle) {
+                showStatus('Please enter a title or use the corrected text', 'error');
+                return;
+            }
+            
+            showStatus('Generating SEO titles...', 'info');
+            
+            try {
+                const response = await fetch('/api/generate-seo-titles', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ topic: customTitle })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    seoTitles = result.titles;
+                    showStatus('SEO titles generated! Select your title and description.', 'success');
+                    displaySEOTitles();
+                } else {
+                    showStatus('SEO titles generation failed: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+            }
+        }
+        
+        // Display SEO titles as radio options
+        function displaySEOTitles() {
+            const seoTitlesContainer = document.getElementById('seoTitlesContainer');
+            const titleOptions = document.getElementById('titleOptions');
+            const descriptionOptions = document.getElementById('descriptionOptions');
+            
+            // Clear existing options
+            titleOptions.innerHTML = '';
+            descriptionOptions.innerHTML = '';
+            
+            // Create title options
+            seoTitles.forEach((title, index) => {
+                const label = document.createElement('label');
+                label.className = 'radio-option';
+                label.innerHTML = `
+                    <input type="radio" name="selectedTitle" value="${title}" data-index="${index}">
+                    <i class="fas fa-heading"></i>
+                    <span style="font-size: 0.8rem;">${title}</span>
+                `;
+                titleOptions.appendChild(label);
+            });
+            
+            // Create description options
+            seoTitles.forEach((title, index) => {
+                const label = document.createElement('label');
+                label.className = 'radio-option';
+                label.innerHTML = `
+                    <input type="radio" name="selectedDescription" value="${title}" data-index="${index}">
+                    <i class="fas fa-comment-alt"></i>
+                    <span style="font-size: 0.8rem;">${title}</span>
+                `;
+                descriptionOptions.appendChild(label);
+            });
+            
+            // Show the container
+            seoTitlesContainer.style.display = 'block';
+            
+            // Add event listeners for title selection
+            document.querySelectorAll('input[name="selectedTitle"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    selectedTitle = this.value;
+                    document.getElementById('customTitle').value = this.value;
+                });
+            });
+            
+            // Add event listeners for description selection
+            document.querySelectorAll('input[name="selectedDescription"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    selectedDescription = this.value;
+                });
+            });
+            
+            // Scroll to titles
+            seoTitlesContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Format corrected text as blog
+        async function formatCorrectedAsBlog() {
+            const content = correctedTextContent;
+            
+            if (!content) {
+                showStatus('No corrected text to format. Please correct some text first.', 'error');
+                return;
+            }
+            
+            showStatus('Formatting text as blog...', 'info');
+            
+            try {
+                const response = await fetch('/api/format-blog', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        content: content,
+                        blogType: correctedBlogType,
+                        voice: correctedVoice
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatus('Text formatted as blog!', 'success');
+                    
+                    // Update correction result with formatted content
+                    const correctionResult = document.getElementById('correctionResult');
+                    correctionResult.innerHTML = marked.parse(result.formattedContent);
+                    correctionResult.style.display = 'block';
+                    
+                    // Update the corrected text content
+                    correctedTextContent = result.formattedContent;
+                    
+                    // Scroll to result
+                    correctionResult.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    showStatus('Formatting failed: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+            }
+        }
+        
+        // Post corrected text as blog
+        async function postCorrectedBlog() {
+            const content = correctedTextContent;
+            let title = selectedTitle || document.getElementById('customTitle').value.trim();
+            const description = selectedDescription || '';
+            
+            if (!content) {
+                showStatus('No corrected text to post. Please correct some text first.', 'error');
+                return;
+            }
+            
+            if (!title) {
+                showStatus('Please enter or select a title for your blog', 'error');
+                return;
+            }
+            
+            showStatus('Posting blog...', 'info');
+            
+            try {
+                const response = await fetch('/api/generate-blog-from-corrected', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        description: description,
+                        content: content,
+                        blogType: correctedBlogType,
+                        voice: correctedVoice,
+                        imageFilename: uploadedImageFilename
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatus('Blog posted successfully!', 'success');
+                    
+                    // Clear the corrected text area
+                    document.getElementById('correctionText').value = '';
+                    document.getElementById('correctionResult').style.display = 'none';
+                    document.getElementById('blogCreationSection').style.display = 'none';
+                    
+                    // Reset selections
+                    selectedTitle = '';
+                    selectedDescription = '';
+                    correctedTextContent = '';
+                    document.getElementById('customTitle').value = '';
+                    document.getElementById('seoTitlesContainer').style.display = 'none';
+                    
+                    // Update preview with the new blog
+                    currentRawContent = result.content;
+                    currentMarkdownContent = extractContent(result.content);
+                    
+                    document.getElementById('previewContent').innerHTML = marked.parse(currentMarkdownContent);
+                    document.getElementById('rawContent').textContent = currentRawContent;
+                    
+                    const frontMatter = extractFrontMatter(result.content);
+                    let frontMatterText = '';
+                    for (const [key, value] of Object.entries(frontMatter)) {
+                        frontMatterText += `${key}: ${value}\n`;
+                    }
+                    document.getElementById('frontmatterContent').textContent = frontMatterText || 'No front matter found';
+                    
+                    // Apply syntax highlighting
+                    document.querySelectorAll('pre code').forEach((block) => {
+                        hljs.highlightElement(block);
+                    });
+                    
+                    // Show preview area
+                    document.getElementById('previewArea').style.display = 'block';
+                    document.getElementById('previewArea').scrollIntoView({ behavior: 'smooth' });
+                    
+                } else {
+                    showStatus('Posting failed: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+            }
+        }
+        
+        // Spell check the preview content
+        async function spellCheckContent() {
+            if (!currentRawContent) {
+                showStatus('No content to spell check', 'error');
+                return;
+            }
+            
+            // Get the content portion (without front matter)
+            const contentToCheck = extractContent(currentRawContent);
+            
+            showStatus('Running spell check...', 'info');
+            
+            try {
+                const response = await fetch('/api/spell-check', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text: contentToCheck })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatus('Spell check complete! Content updated.', 'success');
+                    
+                    // Reconstruct full markdown with corrected content
+                    const frontMatterSection = currentRawContent.split('---').slice(0, 2).join('---') + '---\n\n';
+                    currentRawContent = frontMatterSection + result.corrected;
+                    currentMarkdownContent = result.corrected;
+                    
+                    // Update all views
+                    document.getElementById('previewContent').innerHTML = marked.parse(currentMarkdownContent);
+                    document.getElementById('rawContent').textContent = currentRawContent;
+                    document.getElementById('editTextarea').value = currentRawContent;
+                    
+                    // Apply syntax highlighting
+                    document.querySelectorAll('pre code').forEach((block) => {
+                        hljs.highlightElement(block);
+                    });
+                } else {
+                    showStatus('Spell check failed: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+            }
+        }
+        
+        // Save to blog folder
+        async function saveToBlog() {
+            if (!currentRawContent) {
+                showStatus('No content to save', 'error');
+                return;
+            }
+            
+            if (!currentShortSlug) {
+                // Generate short slug from title if not available
+                const topic = document.getElementById('topic').value || mainFormSelectedTitle;
+                if (topic) {
+                    currentShortSlug = generateShortSlug(topic);
+                } else {
+                    showStatus('No title available for saving', 'error');
+                    return;
+                }
+            }
+            
+            showStatus('Saving blog...', 'info');
+            
+            try {
+                const response = await fetch('/api/save-blog', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        content: currentRawContent,
+                        imageFilename: uploadedImageFilename,
+                        shortSlug: currentShortSlug
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatus('Blog saved successfully to: ' + result.path, 'success');
+                } else {
+                    showStatus('Save failed: ' + result.message, 'error');
+                }
+            } catch (error) {
+                showStatus('Error: ' + error.message, 'error');
+            }
+        }
+        
+        // Update preview from edit textarea
+        function updatePreviewFromEdit() {
+            const editedContent = document.getElementById('editTextarea').value;
+            
+            if (!editedContent) {
+                showStatus('No content in editor', 'error');
+                return;
+            }
+            
+            // Update the stored content
+            currentRawContent = editedContent;
+            currentMarkdownContent = extractContent(editedContent);
+            
+            // Update preview
+            document.getElementById('previewContent').innerHTML = marked.parse(currentMarkdownContent);
+            document.getElementById('rawContent').textContent = currentRawContent;
+            
+            // Update front matter display
+            const frontMatter = extractFrontMatter(editedContent);
+            let frontMatterText = '';
+            for (const [key, value] of Object.entries(frontMatter)) {
+                frontMatterText += `${key}: ${value}\n`;
+            }
+            document.getElementById('frontmatterContent').textContent = frontMatterText || 'No front matter found';
+            
+            // Apply syntax highlighting
+            document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightElement(block);
+            });
+            
+            showStatus('Preview updated with your changes!', 'success');
+            
+            // Switch to preview tab
+            document.querySelectorAll('.preview-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.preview-content').forEach(content => content.classList.remove('active'));
+            document.querySelector('.preview-tab[data-tab="preview"]').classList.add('active');
+            document.getElementById('previewContent').classList.add('active');
+        }
+        
+        // Generate short slug from first 4 words
+        function generateShortSlug(text) {
+            const words = text.trim().split(/\s+/).slice(0, 4).join(' ');
+            return words.toLowerCase()
+                .replace(/[^\w\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/--+/g, '-')
+                .trim();
+        }
+
+        // Helper functions
+        function showStatus(message, type = 'info') {
+            const statusArea = document.getElementById('statusArea');
+            const statusClass = type === 'error' ? 'status-error' : 
+                              type === 'success' ? 'status-success' : 'status-info';
+            
+            statusArea.innerHTML = `
+                <div class="status-message ${statusClass}">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    ${message}
+                </div>
+            `;
+            
+            setTimeout(() => {
+                statusArea.innerHTML = '';
+            }, 5000);
+        }
+        
+        function startHugoServer() {
+            showStatus('Starting Hugo server...', 'info');
+            fetch('/api/start-hugo-server', { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    showStatus(data.message, data.success ? 'success' : 'error');
+                    if (data.success && data.url) {
+                        setTimeout(() => {
+                            if (confirm('Hugo server is running! Would you like to open it in your browser?')) {
+                                window.open(data.url, '_blank');
+                            }
+                        }, 500);
+                    }
+                })
+                .catch(error => {
+                    showStatus('Server start error: ' + error.message, 'error');
+                });
+        }
+        
+        function previewHugo() {
+            fetch('/api/preview-blog', { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ blogId: 'latest' })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.url) {
+                    window.open(data.url, '_blank');
+                }
+                showStatus(data.message, data.success ? 'success' : 'error');
+            })
+            .catch(error => {
+                showStatus('Preview error: ' + error.message, 'error');
+            });
+        }
+        
+        function uploadToServer() {
+            if (confirm('This will rebuild and upload your Hugo site. Continue?')) {
+                fetch('/api/upload-server', { method: 'POST' })
+                    .then(res => res.json())
+                    .then(data => {
+                        showStatus(data.message, data.success ? 'success' : 'error');
+                    })
+                    .catch(error => {
+                        showStatus('Upload error: ' + error.message, 'error');
+                    });
+            }
+        }
+        
+        function copyToClipboard() {
+            const content = currentRawContent;
+            if (!content) {
+                showStatus('No content to copy', 'error');
+                return;
+            }
+            navigator.clipboard.writeText(content)
+                .then(() => showStatus('Copied to clipboard!', 'success'))
+                .catch(() => showStatus('Failed to copy', 'error'));
+        }
+        
+        function downloadBlog() {
+            const content = currentRawContent;
+            if (!content) {
+                showStatus('No content to download', 'error');
+                return;
+            }
+            const topic = document.getElementById('topic').value || 'blog-post';
+            const blob = new Blob([content], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = generateSlug(topic) + '.md';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showStatus('Blog downloaded!', 'success');
+        }
+        
+        function generateSlug(text) {
+            return text.toLowerCase()
+                .replace(/[^\w\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/--+/g, '-')
+                .trim();
+        }
+    </script>
+</body>
+</html>
+
+

@@ -1,0 +1,28 @@
+{
+  "deepseekApiKey": "sk-fb1a6b1b39d94411be7e1a2ddc077293",
+  "imageAiApiKey": "",
+  "hugoPath": "/home/jmgoth/Desktop/web-apps/JoshuaGothBlog/content/blog/",
+  "frontMatter": {
+    "title": "",
+    "date": "",
+    "draft": false,
+    "description": "",
+    "noindex": false,
+    "featured": false,
+    "pinned": false,
+    "comments": true,
+    "series": [],
+    "categories": [],
+    "tags": [],
+    "images": [],
+    "alt_text": ""
+  },
+  "sftp": {
+    "host": "",
+    "port": "22",
+    "username": "",
+    "password": "",
+    "remotePath": ""
+  },
+  "theme": "light"
+}

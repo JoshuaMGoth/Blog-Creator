@@ -1,0 +1,35 @@
+{
+  "name": "blog-creator-app",
+  "version": "1.1.0",
+  "description": "Automated Blog Creator with DeepSeek API",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "archiver": "^7.0.1",
+    "axios": "^1.13.2",
+    "bcryptjs": "^3.0.3",
+    "connect-flash": "^0.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.1",
+    "express-handlebars": "^7.1.3",
+    "express-session": "^1.18.2",
+    "fs-extra": "^11.3.3",
+    "ftp": "^0.3.10",
+    "helmet": "^8.1.0",
+    "morgan": "^1.10.1",
+    "multer": "^2.0.2",
+    "ssh2-sftp-client": "^12.0.1",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

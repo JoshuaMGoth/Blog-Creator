@@ -1,0 +1,461 @@
+const express = require('express');
+const exphbs = require('express-handlebars');
+const path = require('path');
+const fs = require('fs-extra');
+const multer = require('multer');
+const axios = require('axios');
+const { exec } = require('child_process');
+const ftp = require('ftp');
+const Client = require('ssh2-sftp-client');
+const dotenv = require('dotenv');
+const session = require('express-session');
+const flash = require('connect-flash');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const { v4: uuidv4 } = require('uuid');
+
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(helmet());
+app.use(morgan('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'blog-creator-secret',
+    resave: false,
+    saveUninitialized: true
+}));
+app.use(flash());
+
+// Handlebars Configuration
+app.engine('handlebars', exphbs.engine({
+    defaultLayout: 'main',
+    helpers: {
+        json: function(context) {
+            return JSON.stringify(context);
+        },
+        eq: function(v1, v2) {
+            return v1 === v2;
+        }
+    }
+}));
+app.set('view engine', 'handlebars');
+app.set('views', path.join(__dirname, 'views'));
+
+// Multer Configuration for Image Upload
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        const blogId = req.body.blogId || 'temp';
+        const uploadPath = path.join(__dirname, 'temp', blogId);
+        fs.ensureDirSync(uploadPath);
+        cb(null, uploadPath);
+    },
+    filename: function(req, file, cb) {
+        const uniqueName = Date.now() + '-' + file.originalname;
+        cb(null, uniqueName);
+    }
+});
+
+const upload = multer({ 
+    storage: storage,
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+    fileFilter: function(req, file, cb) {
+        const allowedTypes = /jpeg|jpg|png|gif|webp/;
+        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = allowedTypes.test(file.mimetype);
+        
+        if (mimetype && extname) {
+            return cb(null, true);
+        } else {
+            cb(new Error('Only image files are allowed!'));
+        }
+    }
+});
+
+// Configuration File Management
+const configPath = path.join(__dirname, 'config', 'settings.json');
+
+function getConfig() {
+    try {
+        if (fs.existsSync(configPath)) {
+            return JSON.parse(fs.readFileSync(configPath, 'utf8'));
+        }
+        return {
+            deepseekApiKey: '',
+            imageAiApiKey: '',
+            hugoPath: '',
+            frontMatter: {
+                title: '',
+                date: '{{date}}',
+                draft: true,
+                tags: [],
+                categories: [],
+                featuredImage: ''
+            },
+            sftp: {
+                host: '',
+                port: 22,
+                username: '',
+                password: '',
+                remotePath: ''
+            },
+            theme: 'light'
+        };
+    } catch (error) {
+        console.error('Error reading config:', error);
+        return {};
+    }
+}
+
+function saveConfig(config) {
+    try {
+        fs.ensureDirSync(path.dirname(configPath));
+        fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+        return true;
+    } catch (error) {
+        console.error('Error saving config:', error);
+        return false;
+    }
+}
+
+// Routes
+app.get('/', (req, res) => {
+    const config = getConfig();
+    res.render('index', {
+        config: config,
+        messages: req.flash()
+    });
+});
+
+app.get('/settings', (req, res) => {
+    const config = getConfig();
+    res.render('settings', {
+        config: config,
+        messages: req.flash()
+    });
+});
+
+app.post('/settings', (req, res) => {
+    const config = getConfig();
+    
+    // Update config with form data
+    Object.assign(config, req.body);
+    
+    // Handle front matter arrays
+    if (req.body.tags) {
+        config.frontMatter.tags = req.body.tags.split(',').map(tag => tag.trim());
+    }
+    if (req.body.categories) {
+        config.frontMatter.categories = req.body.categories.split(',').map(cat => cat.trim());
+    }
+    
+    if (saveConfig(config)) {
+        req.flash('success', 'Settings saved successfully!');
+    } else {
+        req.flash('error', 'Failed to save settings');
+    }
+    
+    res.redirect('/settings');
+});
+
+// Test API Connection
+app.post('/api/test', async (req, res) => {
+    const config = getConfig();
+    
+    try {
+        // Test DeepSeek API
+        if (config.deepseekApiKey) {
+            const response = await axios.post(
+                'https://api.deepseek.com/v1/chat/completions',
+                {
+                    model: 'deepseek-chat',
+                    messages: [{ role: 'user', content: 'Test connection' }],
+                    max_tokens: 10
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${config.deepseekApiKey}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+        }
+        
+        // Test Hugo path
+        if (config.hugoPath && fs.existsSync(config.hugoPath)) {
+            // Test successful
+        }
+        
+        res.json({ success: true, message: 'All tests passed!' });
+    } catch (error) {
+        res.json({ success: false, message: error.message });
+    }
+});
+
+// Generate Blog Content
+app.post('/api/generate-blog', async (req, res) => {
+    const {
+        topic,
+        blogType,
+        voice,
+        additionalInstructions,
+        generateImage
+    } = req.body;
+    
+    const config = getConfig();
+    
+    try {
+        // Create prompt based on selections
+        const prompt = createBlogPrompt(topic, blogType, voice, additionalInstructions);
+        
+        // Generate content using DeepSeek API
+        const content = await generateWithDeepSeek(prompt, config.deepseekApiKey);
+        
+        // Generate image if requested
+        let imagePath = '';
+        if (generateImage && config.imageAiApiKey) {
+            imagePath = await generateImageWithAI(topic, config.imageAiApiKey);
+        }
+        
+        // Create blog structure
+        const blogId = generateSlug(topic);
+        const blogDir = path.join(__dirname, 'blogs', blogId);
+        fs.ensureDirSync(blogDir);
+        
+        // Create front matter
+        const frontMatter = {
+            ...config.frontMatter,
+            title: topic,
+            date: new Date().toISOString(),
+            draft: false
+        };
+        
+        if (imagePath) {
+            frontMatter.featuredImage = path.basename(imagePath);
+            // Copy image to blog directory
+            fs.copySync(imagePath, path.join(blogDir, path.basename(imagePath)));
+        }
+        
+        // Create markdown content
+        const markdownContent = createMarkdown(frontMatter, content);
+        
+        // Save blog
+        const blogPath = path.join(blogDir, 'index.md');
+        fs.writeFileSync(blogPath, markdownContent);
+        
+        // If Hugo path is set, copy to Hugo content directory
+        if (config.hugoPath) {
+            const hugoContentPath = path.join(config.hugoPath, 'content', 'posts', blogId);
+            fs.copySync(blogDir, hugoContentPath);
+        }
+        
+        res.json({
+            success: true,
+            blogId: blogId,
+            path: blogPath,
+            content: markdownContent
+        });
+        
+    } catch (error) {
+        console.error('Error generating blog:', error);
+        res.json({ success: false, message: error.message });
+    }
+});
+
+// Preview Blog
+app.post('/api/preview-blog', (req, res) => {
+    const { blogId } = req.body;
+    const config = getConfig();
+    
+    if (!config.hugoPath) {
+        return res.json({ success: false, message: 'Hugo path not configured' });
+    }
+    
+    try {
+        // Start Hugo server
+        const hugoCommand = `cd "${config.hugoPath}" && hugo server --bind 0.0.0.0 --port 1313`;
+        
+        exec(hugoCommand, (error, stdout, stderr) => {
+            if (error) {
+                console.error('Error starting Hugo:', error);
+                return res.json({ success: false, message: error.message });
+            }
+        });
+        
+        res.json({ 
+            success: true, 
+            url: 'http://localhost:1313',
+            message: 'Hugo server started. Visit http://localhost:1313 to preview.'
+        });
+        
+    } catch (error) {
+        res.json({ success: false, message: error.message });
+    }
+});
+
+// Upload to Server
+app.post('/api/upload-server', async (req, res) => {
+    const config = getConfig();
+    
+    if (!config.hugoPath || !config.sftp.host) {
+        return res.json({ success: false, message: 'SFTP settings not configured' });
+    }
+    
+    try {
+        // Build Hugo site
+        exec(`cd "${config.hugoPath}" && rm -rf public/ && hugo`, async (error, stdout, stderr) => {
+            if (error) {
+                console.error('Error building Hugo:', error);
+                return res.json({ success: false, message: error.message });
+            }
+            
+            // Upload via SFTP
+            const sftp = new Client();
+            
+            try {
+                await sftp.connect({
+                    host: config.sftp.host,
+                    port: config.sftp.port || 22,
+                    username: config.sftp.username,
+                    password: config.sftp.password
+                });
+                
+                // Upload public directory
+                const localPath = path.join(config.hugoPath, 'public');
+                await sftp.uploadDir(localPath, config.sftp.remotePath);
+                
+                await sftp.end();
+                
+                res.json({ success: true, message: 'Upload completed successfully!' });
+                
+            } catch (sftpError) {
+                console.error('SFTP Error:', sftpError);
+                res.json({ success: false, message: sftpError.message });
+            }
+        });
+        
+    } catch (error) {
+        res.json({ success: false, message: error.message });
+    }
+});
+
+// Save Blog
+app.post('/api/save-blog', (req, res) => {
+    const { blogId, content } = req.body;
+    
+    try {
+        const blogPath = path.join(__dirname, 'blogs', blogId, 'index.md');
+        fs.writeFileSync(blogPath, content);
+        res.json({ success: true, message: 'Blog saved successfully!' });
+    } catch (error) {
+        res.json({ success: false, message: error.message });
+    }
+});
+
+// Upload Image
+app.post('/api/upload-image', upload.single('image'), (req, res) => {
+    try {
+        res.json({
+            success: true,
+            filename: req.file.filename,
+            path: req.file.path
+        });
+    } catch (error) {
+        res.json({ success: false, message: error.message });
+    }
+});
+
+// Helper Functions
+function createBlogPrompt(topic, blogType, voice, additionalInstructions) {
+    const prompts = {
+        instructional: `Write a detailed instructional blog post about "${topic}". Provide step-by-step guidance, practical tips, and actionable advice.`,
+        personable: `Write a personal and engaging blog post about "${topic}". Share personal experiences, anecdotes, and insights in a conversational tone.`,
+        story: `Write a compelling narrative blog post about "${topic}". Create a story that captivates readers with characters, plot, and emotional depth.`,
+        informative: `Write an informative and well-researched blog post about "${topic}". Provide facts, data, and analysis while keeping it accessible.`,
+        persuasive: `Write a persuasive blog post about "${topic}". Use compelling arguments, evidence, and rhetorical strategies to convince readers.`
+    };
+    
+    const voices = {
+        inspirational: 'Use an inspirational and motivational tone that uplifts and encourages readers.',
+        serious: 'Use a serious, professional, and authoritative tone suitable for expert audiences.',
+        casual: 'Use a casual, friendly, and relaxed tone as if talking to a friend.',
+        humorous: 'Use a humorous and witty tone with appropriate jokes and lighthearted observations.',
+        empathetic: 'Use an empathetic, understanding, and compassionate tone that connects emotionally.'
+    };
+    
+    const basePrompt = prompts[blogType] || prompts.informative;
+    const voicePrompt = voices[voice] || voices.casual;
+    
+    return `${basePrompt} ${voicePrompt}. ${additionalInstructions || ''} Make the content sound human, avoid repetitive structures, and ensure uniqueness. Include markdown formatting with headings, lists, and emphasis where appropriate.`;
+}
+
+async function generateWithDeepSeek(prompt, apiKey) {
+    const response = await axios.post(
+        'https://api.deepseek.com/v1/chat/completions',
+        {
+            model: 'deepseek-chat',
+            messages: [
+                { role: 'system', content: 'You are a professional blog writer. Write engaging, human-like blog content with natural flow and varied sentence structures.' },
+                { role: 'user', content: prompt }
+            ],
+            max_tokens: 2000,
+            temperature: 0.7,
+            presence_penalty: 0.6,
+            frequency_penalty: 0.5
+        },
+        {
+            headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json'
+            }
+        }
+    );
+    
+    return response.data.choices[0].message.content;
+}
+
+async function generateImageWithAI(topic, apiKey) {
+    // This is a placeholder - you'll need to implement based on your chosen image AI service
+    // Example for OpenAI DALL-E or Stable Diffusion
+    return '';
+}
+
+function generateSlug(text) {
+    return text
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/--+/g, '-')
+        .trim();
+}
+
+function createMarkdown(frontMatter, content) {
+    let markdown = '---\n';
+    
+    for (const [key, value] of Object.entries(frontMatter)) {
+        if (Array.isArray(value)) {
+            markdown += `${key}:\n`;
+            value.forEach(item => {
+                markdown += `  - ${item}\n`;
+            });
+        } else {
+            markdown += `${key}: ${value}\n`;
+        }
+    }
+    
+    markdown += '---\n\n';
+    markdown += content;
+    
+    return markdown;
+}
+
+// Start Server
+app.listen(PORT, () => {
+    console.log(`Blog Creator App running on http://localhost:${PORT}`);
+    console.log(`Press Ctrl+C to stop`);
+});
